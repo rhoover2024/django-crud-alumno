@@ -1,0 +1,63 @@
+<!-- templates/alumnos/lista_alumnos.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Lista de Alumnos</h1>
+    <a href="{% url 'crear_alumno' %}" class="btn btn-primary mb-3">Agregar Alumno</a>
+    <!-- Formulario de búsqueda y filtrado -->
+    <form method="get" class="mb-4">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" name="q" class="form-control mb-1" placeholder="Buscar por nombre" value="{{ query }}">
+            </div>
+            <div class="col">
+                <select name="edad" class="form-control mb-1">
+                    <option value="">Filtrar por edad</option>
+                    {% for edad in edades %}
+                        <option value="{{ edad }}" {% if edad_filter == edad|stringformat:"s" %}selected{% endif %}>{{ edad }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Mensaje de no datos -->
+    {% if not alumnos %}
+        <div class="alert alert-info" role="alert">
+            No se encontraron alumnos con los criterios proporcionados.
+        </div>
+    {% else %}
+        <!-- Tabla de alumnos -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Edad</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alumno in alumnos %}
+                    <tr>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.apellido }}</td>
+                        <td>{{ alumno.edad }}</td>
+                        <td>{{ alumno.correo }}</td>
+                        <td>
+                            <a href="{% url 'actualizar_alumno' alumno.id %}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{% url 'eliminar_alumno' alumno.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+
+{% endblock %}
